@@ -5,5 +5,7 @@ jobs:
     compose:
         runs-on: ubuntu-latest
         steps: 
+            - name: compose build
+              run: docker compose -f docker-compose.yml build
             - name: compose up
-              run: docker compose -f docker-compose.yml up -d --build
+              run: docker compose up
