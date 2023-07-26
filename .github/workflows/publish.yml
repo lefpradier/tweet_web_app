@@ -5,9 +5,7 @@ jobs:
     compose:
         runs-on: ubuntu-latest
         steps: 
-            - name: compose
-              uses: pennsignals/publish_docker-compose@v0.2.6-rc.1
-              with:
-                  version: "0.1"
-                  docker_compose: "docker-compose.yml"
-                  repo_token: "${{ secrets.GITHUB_TOKEN }}"
+            - name: compose build
+              run: docker compose build
+            - name: compose up
+              run: docker compose up
