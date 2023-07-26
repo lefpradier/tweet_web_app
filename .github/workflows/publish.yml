@@ -2,9 +2,11 @@ name: publish
 on: [push]
 jobs: 
     compose:
+        runs-on: ubuntu-latest
         steps: 
-            - uses: pennsignals/publish_docker-compose@v0.1.0
-                with: 
-                    version: "0.1"
-                    docker_compose: "./APP/docker-compose.yml"
-                    repo_token: "${{ secrets.GITHUB_TOKEN }}"
+            - name: compose
+              uses: pennsignals/publish_docker-compose@v0.1.0
+              with:
+                  version: "0.1"
+                  docker_compose: "./APP/docker-compose.yml"
+                  repo_token: "${{ secrets.GITHUB_TOKEN }}"
