@@ -5,7 +5,7 @@ jobs:
         runs-on: ubuntu-latest
         steps: 
             - name: compose
-              uses: pennsignals/publish_docker-compose@v0.2.6
+              uses: pennsignals/publish_docker-compose@v0.2.6-rc.1
               with:
                   version: "0.1"
                   docker_compose: "./APP/docker-compose.yml"
