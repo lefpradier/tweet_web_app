@@ -6,6 +6,6 @@ jobs:
         runs-on: ubuntu-latest
         steps: 
             - name: compose build
-              run: docker compose build
+              run: docker compose build -f "docker-compose.yml"
             - name: compose up
-              run: docker compose up
+              run: docker compose up -f "docker-compose.yml"
