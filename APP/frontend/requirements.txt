@@ -1,0 +1,4 @@
+# frontend/requirements.txt
+
+streamlit==1.24.1
+matplotlib==3.7.1
