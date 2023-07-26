@@ -1,4 +1,5 @@
 name: publish
+run-name: ${{ github.actor }} creates the app
 on: [push]
 jobs: 
     compose:
@@ -8,5 +9,5 @@ jobs:
               uses: pennsignals/publish_docker-compose@v0.2.6-rc.1
               with:
                   version: "0.1"
-                  docker_compose: "./APP/docker-compose.yml"
+                  docker_compose: "./docker-compose.yml"
                   repo_token: "${{ secrets.GITHUB_TOKEN }}"
