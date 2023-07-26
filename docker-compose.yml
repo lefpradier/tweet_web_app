@@ -8,10 +8,10 @@ services:
     depends_on:
       - backend
     volumes:
-        - ./APP:./APP
+        - ./APP:.
   backend:
     build: backend
     ports:
       - 8080:8080
     volumes:
-      - ./APP:./APP
+      - ./APP:.
