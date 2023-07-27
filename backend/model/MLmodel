@@ -8,5 +8,5 @@ flavors:
     python_model: python_model.pkl
     python_version: 3.10.6
 mlflow_version: 2.4.1
-model_uuid: 9d485a083e16426ca7d19a41f52959ae
-utc_time_created: '2023-07-24 16:37:08.791252'
+model_uuid: 433ef54987de40178db9b297bc2b53b4
+utc_time_created: '2023-07-27 11:49:53.928880'

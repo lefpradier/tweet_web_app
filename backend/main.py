@@ -12,7 +12,7 @@ from fastapi.responses import PlainTextResponse
 
 
 # load model and predict
-loaded_model = mlflow.pyfunc.load_model("model")
+loaded_model = mlflow.pyfunc.load_model("backend/model")
 app = FastAPI()
 
 
