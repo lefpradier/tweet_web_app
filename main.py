@@ -19,17 +19,19 @@ tweet = st.text_input("Import a tweet")
 if st.button("Predict sentiment"):
     if tweet is not None:
         data = {"tweet": tweet}
-        res = requests.post("http://backend:8080/tweet", params=data)
+        res = requests.post(
+            "https://sentiment-analysis-lefp.azurewebsites.net/tweet", params=data
+        )
         output = res.json()
         score = output.get("score")
         if score >= 0.5:
             pos_txt = score / 2
             score_txt = "Négatif à " + str(round(score * 100, 1)) + "%"
-            image = plt.imread("sad.png")
+            image = plt.imread("frontend/sad.png")
         else:
             pos_txt = (1 - score) / 2 + score
             score_txt = "Positif à " + str(round((1 - score) * 100, 1)) + "%"
-            image = plt.imread("happy.png")
+            image = plt.imread("frontend/happy.png")
 
         fig = plt.figure(figsize=(5, 2), facecolor="#0E1117")
         gs = fig.add_gridspec(nrows=2, ncols=1, height_ratios=[1, 1])
