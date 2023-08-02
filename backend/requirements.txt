@@ -5,3 +5,5 @@ python-multipart
 uvicorn
 asyncio
 spacy-fastlang
+spacy
+tensorflow==2.11

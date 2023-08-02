@@ -1,18 +1,32 @@
+import sys
+
+sys.path.insert(1, "backend")
+import os
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 import uuid
 import uvicorn
 from fastapi import File
 from fastapi import FastAPI
 from fastapi import UploadFile
 import numpy as np
-import mlflow
 import asyncio
-import spacy_fastlang
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import PlainTextResponse
+import tensorflow as tf
+import backend_functions as bf
 
 
-# load model and predict
-loaded_model = mlflow.pyfunc.load_model("backend/model")
+# Load TFLite model and allocate tensors.
+interpreter = tf.lite.Interpreter(model_path="backend/model.tflite")
+interpreter.allocate_tensors()
+# Get input and output tensors.
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+# Test model on random input data.
+input_shape = input_details[0]["shape"]
+
+
 app = FastAPI()
 
 
@@ -25,9 +39,15 @@ def read_root():
 # predict
 @app.post("/tweet")
 async def predict_stm(tweet: str):
-    pred = loaded_model.predict(tweet)
+    input_data = bf.preprocessing_transform(tweet)
+    interpreter.set_tensor(input_details[0]["index"], input_data)
+
+    interpreter.invoke()
+
+    # The function `get_tensor()` returns a copy of the tensor data.
+    # Use `tensor()` in order to get a pointer to the tensor.
+    pred = interpreter.get_tensor(output_details[0]["index"])
     score = float(pred[0][0])
-    print(score)
     return {"score": score}
 
 
