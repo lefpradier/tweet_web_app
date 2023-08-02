@@ -6,13 +6,12 @@ import os
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 import uuid
 import uvicorn
-from fastapi import File
 from fastapi import FastAPI
-from fastapi import UploadFile
 import numpy as np
 import asyncio
-from fastapi.exceptions import RequestValidationError
-from fastapi.responses import PlainTextResponse
+
+# from fastapi.exceptions import RequestValidationError
+# from fastapi.responses import PlainTextResponse
 import tensorflow as tf
 import backend_functions as bf
 
@@ -39,21 +38,27 @@ def read_root():
 # predict
 @app.post("/tweet")
 async def predict_stm(tweet: str):
-    input_data = bf.preprocessing_transform(tweet)
+    input_data, cvocab, cnvocab = bf.preprocessing_transform(tweet)
+    # todo : test non vocab words
+    message = ""
+    if cnvocab != 0:
+        message = "Warning: %d words out of %d are unknown" % (
+            cnvocab,
+            cnvocab + cvocab,
+        )
     interpreter.set_tensor(input_details[0]["index"], input_data)
-
     interpreter.invoke()
 
     # The function `get_tensor()` returns a copy of the tensor data.
     # Use `tensor()` in order to get a pointer to the tensor.
     pred = interpreter.get_tensor(output_details[0]["index"])
     score = float(pred[0][0])
-    return {"score": score}
+    return {"score": score, "message": message}
 
 
-@app.exception_handler(RequestValidationError)
-async def validation_exception_handler(request, ex):
-    return PlainTextResponse(str(ex), status_code=400)
+# @app.exception_handler(RequestValidationError)
+# async def validation_exception_handler(request, ex):
+#     return PlainTextResponse(str(ex), status_code=400)
 
 
 if __name__ == "__main__":

@@ -12,6 +12,7 @@ kill $pid
 #3. convert to TFLite
 python convert_model.py
 #4. unit tests
+python -m pytest backend/test_MAIN.py
 #5. build local API and test with simple tweet
 docker build -f backend/Dockerfile -t backend .
 docker run -p 8080:8080 backend > /dev/null 2>&1 &
@@ -25,7 +26,10 @@ kill $pid
 
 #6. azure deployment : commit and push API to git, from git to azure
 
-#todo:tests unitaires
+#todo:tests unitaires :
+#*ping
+#*good item
+#!bad items
 #todo:sanity check models and api
 #todo:print and comments along pipe
 #todo:check path

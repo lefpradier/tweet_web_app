@@ -5,6 +5,7 @@ import tensorflow as tf
 import re
 import spacy_fastlang
 import numpy as np
+from fastapi import HTTPException
 
 
 def preprocessing_transform(tweet):
@@ -73,17 +74,34 @@ def preprocessing_transform(tweet):
     # Spell check elision : Replace 3 or more consecutive letters by 2 letter.
     tweet = re.sub(sequencePattern, seqReplacePattern, tweet)
 
+    # todo : empty tweet
+    if len(tweet.strip()) == 0:
+        raise HTTPException(
+            status_code=400, detail="Tweet is empty or contains only hypertext links"
+        )
     # apply nlp tokenizer model
     token_tweet = nlp(tweet)
     tweetwords = ""
     # keep only en tweet
+    cvocab = 0
+    cnvocab = 0
     if (token_tweet._.language == "en") and (token_tweet._.language_score >= 0.5):
         for word in token_tweet:
             # Checking if the word is a stopword.
             if not word.is_stop:
                 if len(word.text) > 1:
+                    # todo : check vocab and send warning
                     # Lemmatizing the word.
                     lem_word = word.lemma_
-                    tweetwords += lem_word + " "
+                    if lem_word in vectorizer.get_vocabulary():
+                        tweetwords += lem_word + " "
+                        cvocab += 1
+                    else:
+                        cnvocab += 1
+    # todo : non eng tweet
+    else:
+        raise HTTPException(
+            status_code=400, detail="Tweet does not appear to be in English"
+        )
     tweetwords = vectorizer(np.array([tweetwords])).numpy()
-    return tweetwords
+    return tweetwords, cvocab, cnvocab
