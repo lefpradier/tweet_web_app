@@ -8,9 +8,11 @@ import numpy as np
 from fastapi import HTTPException
 
 
-def preprocessing_transform(tweet):
+def preprocessing_transform(
+    tweet, vectorizer_path="backend/vectorizer.pkl", raise_exceptions=True
+):
     # load spacy model
-    from_disk = pkl.load(open("backend/vectorizer.pkl", "rb"))
+    from_disk = pkl.load(open(vectorizer_path, "rb"))
     vectorizer = TextVectorization.from_config(from_disk["config"])
     vectorizer.adapt(tf.data.Dataset.from_tensor_slices(["xyz"]))
     vectorizer.set_weights(from_disk["weights"])
@@ -75,7 +77,7 @@ def preprocessing_transform(tweet):
     tweet = re.sub(sequencePattern, seqReplacePattern, tweet)
 
     # todo : empty tweet
-    if len(tweet.strip()) == 0:
+    if raise_exceptions and len(tweet.strip()) == 0:
         raise HTTPException(
             status_code=400, detail="Tweet is empty or contains only hypertext links"
         )
@@ -99,7 +101,7 @@ def preprocessing_transform(tweet):
                     else:
                         cnvocab += 1
     # todo : non eng tweet
-    else:
+    elif raise_exceptions:
         raise HTTPException(
             status_code=400, detail="Tweet does not appear to be in English"
         )

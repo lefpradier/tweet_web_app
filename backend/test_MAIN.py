@@ -25,7 +25,7 @@ def test_good():
 
 # unit test : bad items
 def test_websites():
-    response = client.post("/tweet", params={"tweet": "www.google.com"})
+    response = client.post("/tweet", params={"tweet": "https://www.google.com"})
     assert response.status_code == 400
     assert response.json() == {
         "detail": "Tweet is empty or contains only hypertext links"
@@ -33,7 +33,7 @@ def test_websites():
 
 
 # unit test : bad language
-def test_websites():
+def test_language():
     response = client.post("/tweet", params={"tweet": "J'adore les croissants"})
     assert response.status_code == 400
     assert response.json() == {"detail": "Tweet does not appear to be in English"}
