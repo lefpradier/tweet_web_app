@@ -3,19 +3,16 @@ import streamlit as st
 from PIL import Image
 import matplotlib.pyplot as plt
 
-##! STREAMLITE
+##! STREAMLIT
 
 
-# # https://discuss.streamlit.io/t/version-0-64-0-deprecation-warning-for-st-file-uploader-decoding/4465
-# st.set_option("deprecation.showfileUploaderEncoding", False)
-
-# defines an h1 header
+# header
 st.title("Tweet sentiment analysis web app")
 
-# displays a file uploader widget
+# Fenêtre d'entrée du tweet
 tweet = st.text_input("Import a tweet")
 
-# displays a button
+# Bouton de prédiction
 if st.button("Predict sentiment"):
     if tweet is not None:
         data = {"tweet": tweet}
@@ -23,6 +20,7 @@ if st.button("Predict sentiment"):
             "https://sentiment-analysis-lefp.azurewebsites.net/tweet", params=data
         )
         output = res.json()
+        # Si un score a été effectivement renvoyé, générer une image qui affiche le score prédit
         if "score" in output:
             score = output.get("score")
             if score >= 0.5:
@@ -58,6 +56,7 @@ if st.button("Predict sentiment"):
             axs["img"].set_facecolor("#0E1117")
             axs["img"].set_axis_off()
             st.pyplot(fig)
+        # si aucun score n'a été renvoyé, afficher l'erreur
         else:
             st.text("Error detail:")
             error = output.get("detail")

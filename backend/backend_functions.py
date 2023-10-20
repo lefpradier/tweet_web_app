@@ -9,6 +9,13 @@ from fastapi import HTTPException
 
 
 def preprocessing_early_steps(tweet, vectorizer, raise_exceptions=True):
+    """
+    Premières étapes de preprocessing des tweets
+    Paramètres :
+    - tweet : string
+    - vectorizer : objet vectorizer Keras
+    - raise_exceptions : Boolean, détermine si les exceptions doivent être rapportées
+    """
     nlp = spacy.load("en_core_web_sm")
     nlp.add_pipe("language_detector")
 
@@ -105,6 +112,13 @@ def preprocessing_early_steps(tweet, vectorizer, raise_exceptions=True):
 def preprocessing_transform(
     tweet, vectorizer_path="backend/vectorizer.pkl", raise_exceptions=True
 ):
+    """
+    Préprocessing complet d'un tweet
+    Paramètres :
+    - tweet : string
+    - vectorizer_path : string, chemin vers le vectorizer Keras
+    - raise_exceptions : Boolean, détermine si les exceptions doivent être rapportées
+    """
     # load spacy model
     from_disk = pkl.load(open(vectorizer_path, "rb"))
     vectorizer = TextVectorization.from_config(from_disk["config"])

@@ -9,21 +9,21 @@ from main import app
 client = TestClient(app)
 
 
-# unit test on auto request : ping-pong
+# test unitaire de connexion à l'API
 def test_read_root():
     response = client.get("/")
     assert response.status_code == 200  # successful http request
     assert response.json() == {"message": "Welcome from the API"}
 
 
-# unit test : good item
+# test unitaire de prédiction sur un tweet correct
 def test_good():
     response = client.post("/tweet", params={"tweet": "i like cats"})
     assert response.status_code == 200
     assert response.json() == {"message": "", "score": 0.19351422786712646}
 
 
-# unit test : bad items
+# test unitaire de prédiction sur un tweet au formatage incorrect
 def test_websites():
     response = client.post("/tweet", params={"tweet": "https://www.google.com"})
     assert response.status_code == 400
@@ -32,7 +32,7 @@ def test_websites():
     }
 
 
-# unit test : bad language
+# test unitaire de prédiction sur un tweet non anglophone
 def test_language():
     response = client.post("/tweet", params={"tweet": "J'adore les croissants"})
     assert response.status_code == 200
@@ -42,7 +42,7 @@ def test_language():
     }
 
 
-# unit test : good item but warning
+# test unitaire sur un tweet contenant des mots inconnus
 def test_warning():
     response = client.post(
         "/tweet", params={"tweet": "What art thou that usurp’st this time of night"}
