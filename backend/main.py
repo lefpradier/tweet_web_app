@@ -38,14 +38,20 @@ def read_root():
 # predict
 @app.post("/tweet")
 async def predict_stm(tweet: str):
-    input_data, cvocab, cnvocab = bf.preprocessing_transform(tweet)
+    input_data, cvocab, cnvocab, language, l_score = bf.preprocessing_transform(tweet)
     # todo : test non vocab words
     message = ""
     if cnvocab != 0:
-        message = "Warning: %d words out of %d are unknown" % (
+        message += "Warning: %d words out of %d are unknown. " % (
             cnvocab,
             cnvocab + cvocab,
         )
+    if language != "en":
+        message += (
+            "Warning : Tweet does not appear to be in English. However, language detection can be unreliable for tweets below 3 words. Detected language: %s with a probability of %.3f"
+            % (language.upper(), l_score)
+        )
+
     interpreter.set_tensor(input_details[0]["index"], input_data)
     interpreter.invoke()
 

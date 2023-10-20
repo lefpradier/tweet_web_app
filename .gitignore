@@ -2,3 +2,5 @@ config_azure_docker.sh
 docker-compose.yml
 brouillon_docker.sh
 .github/workflows/publish.yml
+backend/model
+backend/__pycache__/

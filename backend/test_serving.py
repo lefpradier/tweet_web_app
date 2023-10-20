@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 
 test_df = pd.read_csv("data/raw/raw_test.csv")
-host = "localhost"
+host = "127.0.0.1"
 port = "5000"
 url = f"http://{host}:{port}/invocations"
 headers = {"Content-Type": "application/json"}

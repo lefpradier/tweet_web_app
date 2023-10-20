@@ -1,19 +1,20 @@
-#1. serve MM
-#a.Create model for deployment
-python serving_model_input.py
-#2. Use test dataset for serving test
-#a.create restapi
+# 1. Serve the best model with MLFlow
+# a. Create model for deployment
+cd ..
+python3 src/modeling/serving_model_input.py
+# b. Create a REST API
 mlflow models serve -m deployment/backend/model > /dev/null 2>&1 &
 pid=$!
 sleep 5
-#b.send data to api
-python test_serving.py
+# c. Send test data to the API
+python3 deployment/backend/test_serving.py
 kill $pid
-#3. convert to TFLite
-python convert_model.py
-#4. unit tests
-python -m pytest backend/test_MAIN.py
-#5. build local API and test with simple tweet
+#2. Convert TensorFlow model to TFLite
+python3 deployment/backend/convert_model.py
+#3. Perform unit tests with pytest on the FastAPI API
+cd deployment
+python3 -m pytest backend/test_MAIN.py
+#4. build local API and test with simple tweet
 docker build -f backend/Dockerfile -t backend .
 docker run -p 8080:8080 backend > /dev/null 2>&1 &
 pid=$!
@@ -24,14 +25,10 @@ until curl -X 'POST' \
   -d ''; do sleep 5; done
 kill $pid
 
-#6. azure deployment : commit and push API to git, from git to azure
-
-#todo:tests unitaires :
-#*ping
-#*good item
-#!bad items
-#todo:sanity check models and api
-#todo:print and comments along pipe
-#todo:check path
-#todo:integrate stage commit push to main pipe
-#todo:architecture init
+#5. Commit and push the API to GitHub, from GitHub to Azure App Service
+echo
+echo
+echo
+echo "##############################################"
+echo "You can now commit and push the API to GitHub."
+echo "##############################################"

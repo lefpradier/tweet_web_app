@@ -8,14 +8,7 @@ import numpy as np
 from fastapi import HTTPException
 
 
-def preprocessing_transform(
-    tweet, vectorizer_path="backend/vectorizer.pkl", raise_exceptions=True
-):
-    # load spacy model
-    from_disk = pkl.load(open(vectorizer_path, "rb"))
-    vectorizer = TextVectorization.from_config(from_disk["config"])
-    vectorizer.adapt(tf.data.Dataset.from_tensor_slices(["xyz"]))
-    vectorizer.set_weights(from_disk["weights"])
+def preprocessing_early_steps(tweet, vectorizer, raise_exceptions=True):
     nlp = spacy.load("en_core_web_sm")
     nlp.add_pipe("language_detector")
 
@@ -87,23 +80,40 @@ def preprocessing_transform(
     # keep only en tweet
     cvocab = 0
     cnvocab = 0
-    if (token_tweet._.language == "en") and (token_tweet._.language_score >= 0.5):
-        for word in token_tweet:
-            # Checking if the word is a stopword.
-            if not word.is_stop:
-                if len(word.text) > 1:
-                    # todo : check vocab and send warning
-                    # Lemmatizing the word.
-                    lem_word = word.lemma_
-                    if lem_word in vectorizer.get_vocabulary():
-                        tweetwords += lem_word + " "
-                        cvocab += 1
-                    else:
-                        cnvocab += 1
-    # todo : non eng tweet
-    elif raise_exceptions:
-        raise HTTPException(
-            status_code=400, detail="Tweet does not appear to be in English"
-        )
+
+    for word in token_tweet:
+        # Checking if the word is a stopword.
+        if not word.is_stop:
+            if len(word.text) > 1:
+                # todo : check vocab and send warning
+                # Lemmatizing the word.
+                lem_word = word.lemma_
+                if lem_word in vectorizer.get_vocabulary():
+                    tweetwords += lem_word + " "
+                    cvocab += 1
+                else:
+                    cnvocab += 1
+    return (
+        tweetwords,
+        cvocab,
+        cnvocab,
+        token_tweet._.language,
+        token_tweet._.language_score,
+    )
+
+
+def preprocessing_transform(
+    tweet, vectorizer_path="backend/vectorizer.pkl", raise_exceptions=True
+):
+    # load spacy model
+    from_disk = pkl.load(open(vectorizer_path, "rb"))
+    vectorizer = TextVectorization.from_config(from_disk["config"])
+    vectorizer.adapt(tf.data.Dataset.from_tensor_slices(["xyz"]))
+    vectorizer.set_weights(from_disk["weights"])
+
+    tweetwords, cvocab, cnvocab, language, l_score = preprocessing_early_steps(
+        tweet, vectorizer, raise_exceptions
+    )
+
     tweetwords = vectorizer(np.array([tweetwords])).numpy()
-    return tweetwords, cvocab, cnvocab
+    return (tweetwords, cvocab, cnvocab, language, l_score)

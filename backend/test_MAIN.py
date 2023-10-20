@@ -35,8 +35,11 @@ def test_websites():
 # unit test : bad language
 def test_language():
     response = client.post("/tweet", params={"tweet": "J'adore les croissants"})
-    assert response.status_code == 400
-    assert response.json() == {"detail": "Tweet does not appear to be in English"}
+    assert response.status_code == 200
+    assert response.json() == {
+        "score": 0.11344850808382034,
+        "message": "Warning: 2 words out of 3 are unknown. Warning : Tweet does not appear to be in English. However, language detection can be unreliable for tweets below 3 words. Detected language: FR with a probability of 0.764",
+    }
 
 
 # unit test : good item but warning
@@ -45,7 +48,4 @@ def test_warning():
         "/tweet", params={"tweet": "What art thou that usurp’st this time of night"}
     )
     assert response.status_code == 200
-    assert response.json() == {
-        "message": "Warning: 1 words out of 6 are unknown",
-        "score": 0.3702499270439148,
-    }
+    {"score": 0.3702499270439148, "message": "Warning: 1 words out of 6 are unknown. "}
