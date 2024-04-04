@@ -1,4 +1,4 @@
-# Tweet web app
+# [Tweet web app](https://lefpradier.github.io/tweet_web_app)
 Ce repository contient le code source d'une API permettant de prédire le sentiment majoritaire d'un tweet, et d'une application Streamlit faisant appel à cette API. L'API et l'application ont été initialement déployées aux adresses suivantes : https://sentiment-analysis-lefp.azurewebsites.net et https://tweet-sentiment-lefp.streamlit.app/.
 ## Installation locale
 ### API
